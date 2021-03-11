@@ -1,11 +1,11 @@
 from random import randint
 from fight_test_save import fights, wins, losses, xp
 
+player_won = False
+player_lost = False
+
 
 class Player:
-    # hp = randint(100, 150)
-    # ap = 3
-
     def __init__(self, hp, dmg, block, heal, ap):
         self.hp = hp
         self.dmg = dmg
@@ -15,8 +15,6 @@ class Player:
 
 
 class Enemy:
-    # hp = randint(100, 150)
-
     def __init__(self, hp, dmg, block, heal):
         self.hp = hp
         self.dmg = dmg
@@ -51,14 +49,15 @@ def blocking():
     if Enemy.dmg > Player.block:
         print("Your fingers slipped.")
         Player.hp -= Enemy.dmg
+        print(f"You took {Enemy.dmg} damage. Hp: {Player.hp}")
     else:
         print("You blocked the attack.")
         Player.ap += 1
 
 
 def healing():
-    Player.hp += randint(10-20)
-    Enemy.hp += randint(10-20)
+    Player.hp += randint(7, 15)
+    Enemy.hp += randint(10, 20)
     Player.ap += 1
 
 
@@ -103,6 +102,7 @@ def stats():
 
 Commands = {
     'exit': leave,
+    'leave': leave,
     'stats': stats,
     'help': print_help,
     'fight': fight,
@@ -118,8 +118,7 @@ while True:
     else:
         print("That is not an option.")
     while fgt_tf:
-        if Player.ap == 0:
-            blocking()
+
         if Enemy.hp <= 0:
             fgt_tf = False
             fights += 1
@@ -127,14 +126,22 @@ while True:
             tmp_xp = randint(5, 10)
             xp += tmp_xp
             print(f"You won and gained {tmp_xp} xp.\nTotal xp: {xp}")
+            player_won = True
         elif Player.hp <= 0:
             fgt_tf = False
             fights += 1
             losses += 1
             print("You lost")
-        print(f"Ap: {Player.ap}   Hp: {Player.hp}\nEnemy Hp: {Enemy.hp}")
-        command = input("> ").lower().split(" ")
-        if command[0] in Commands_fights:
-            Commands_fights[command[0]]()
-        else:
-            print("That is not an option.")
+            player_lost = True
+        elif Player.ap == 0:
+            blocking()
+        elif player_won is False and player_lost is False:
+            print(f"Ap: {Player.ap}   Hp: {Player.hp}\nEnemy Hp: {Enemy.hp}")
+            command = input("> ").lower().split(" ")
+            if command[0] in Commands_fights:
+                Commands_fights[command[0]]()
+            else:
+                print("That is not an option.")
+        if player_won is True or player_lost is True:
+            player_won = False
+            player_lost = False
