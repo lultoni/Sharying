@@ -1,4 +1,4 @@
-fights = 1
-wins = 1
+fights = 0
+wins = 0
 losses = 0
-xp = 7
+xp = 0
